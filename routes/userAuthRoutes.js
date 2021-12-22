@@ -88,20 +88,35 @@ router.post("/token", (req, res) => {
   if (refreshToken === null)
     return res.status(401).json({ status: false, message: "Invalid Token." });
 
-  const savedRefreshToken = RefreshToken.findOne({ refreshToken });
+  const savedRefreshToken = RefreshToken.findOne({ refreshToken }).exec(
+    (err, token) => {
+      if (err) {
+        return res
+          .status(403)
+          .json({ status: false, message: "Invalid Token." });
+      }
 
-  if (!savedRefreshToken)
-    return res.status(403).json({ status: false, message: "Invalid Token." });
+      if (token === null) {
+        return res
+          .status(403)
+          .json({ status: false, message: "Invalid Token." });
+      }
 
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-    if (err)
-      return res
-        .status(403)
-        .json({ status: false, message: "Unexpected Error." });
+      jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN_SECRET,
+        (err, user) => {
+          if (err)
+            return res
+              .status(403)
+              .json({ status: false, message: "Unexpected Error." });
 
-    const accessToken = generateAccessToken({ id: user.id });
-    res.json({ accessToken: accessToken });
-  });
+          const accessToken = generateAccessToken({ id: user.id });
+          res.json({ accessToken: accessToken });
+        }
+      );
+    }
+  );
 });
 
 //signup user
