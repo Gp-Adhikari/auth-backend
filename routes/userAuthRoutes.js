@@ -8,7 +8,6 @@ const router = express.Router();
 const User = mongoose.model("User");
 const RefreshToken = mongoose.model("RefreshToken");
 
-const authenticateToken = require("../middleware/authenticateToken.middleware");
 const generateAccessToken = require("../middleware/generateAccessToken.middleware");
 
 //email validation
@@ -20,6 +19,7 @@ const validateEmail = (email) => {
     );
 };
 
+//login user
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password)
@@ -81,6 +81,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
+//get new token / generate
 router.post("/token", (req, res) => {
   const refreshToken = req.body.token;
 
@@ -98,11 +99,12 @@ router.post("/token", (req, res) => {
         .status(403)
         .json({ status: false, message: "Unexpected Error." });
 
-    const accessToken = generateAccessToken({ name: user.name });
+    const accessToken = generateAccessToken({ id: user.id });
     res.json({ accessToken: accessToken });
   });
 });
 
+//signup user
 router.post("/signup", async (req, res) => {
   //   res.status = 200;
 
@@ -195,6 +197,7 @@ router.post("/signup", async (req, res) => {
   }
 });
 
+//logout user
 router.delete("/logout", (req, res) => {
   const refreshToken = req.body.token;
   if (!refreshToken)

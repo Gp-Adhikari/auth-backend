@@ -9,7 +9,9 @@ function authenticateToken(req, res, next) {
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
     if (err) return res.json({ status: false, message: "Invalid Token" });
+
     req.user = user;
+
     next();
   });
 }

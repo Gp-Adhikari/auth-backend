@@ -12,9 +12,11 @@ require("./models/RefreshToken.model");
 
 //routes
 const userAuthRoutes = require("./routes/userAuthRoutes");
+const userGetRoutes = require("./routes/userGetRoutes");
 
 app.use(bodyParser.json());
 app.use(userAuthRoutes);
+app.use(userGetRoutes);
 
 mongoose.connect(process.env.URI, {
   useNewUrlParser: true,
