@@ -222,7 +222,7 @@ router.delete("/logout", (req, res) => {
     if (err || !data)
       return res.status(400).json({ status: false, message: "No Token." });
 
-    return res.status(200).json({ status: true, message: "Removed." });
+    return res.status(204).json({ status: true, message: "Removed." });
   });
 
   //   refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
